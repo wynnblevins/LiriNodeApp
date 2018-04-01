@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/wynnblevins/LiriNodeApp#readme",
   "dependencies": {
+    "dotenv": "^5.0.1",
     "node-spotify-api": "^1.0.7",
+    "request": "^2.85.0",
     "twitter": "^1.7.1"
   }
 }

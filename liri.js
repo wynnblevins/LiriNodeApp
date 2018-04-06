@@ -26,10 +26,6 @@ function getUserCommandArg() {
     return userCommandArg.join(' ');
 }
 
-function getCommandArgFromFile() {
-
-}
-
 function showTweets() {
     twitterClient.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=URBootCampUser&count=5', 
         function (error, tweets, response) {
@@ -69,14 +65,21 @@ function spotify(songName) {
     spotifyClient.search({ 
         type: 'track', 
         query: songName,
-        limit: 10
+        limit: 1
     }).then(function(response) {
-        console.log(response);
-        // show the artist name
-
+        var responseItem = response.tracks.items[0];
+        var artistsString = '';
+        // show the artist(s) name
+        for (var i = 0; i < responseItem.artists.length; i++) {
+            artistsString += responseItem.artists[i].name + ' ';
+        }
+        console.log('Artist(s): ' + artistsString);
+        
         // show the preview link from Spotify
+        console.log('Preview Link: ' + responseItem.href);
 
         // show the album the song is off of
+        console.log('Album: ' + responseItem.album.name)
     }).catch(function(err) {
         console.log(err);
     });

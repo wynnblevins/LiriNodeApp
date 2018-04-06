@@ -62,6 +62,10 @@ function doWhatItSays(fileName) {
 }
 
 function spotify(songName) {
+    if (!songName) {
+        songName = 'The Sign, Ace of Base';
+    }
+
     spotifyClient.search({ 
         type: 'track', 
         query: songName,

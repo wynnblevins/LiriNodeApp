@@ -27,17 +27,22 @@ function getUserCommandArg() {
 }
 
 function showTweets() {
-    twitterClient.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=URBootCampUser&count=5', 
+    var tweetsUrl = 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=URBootCampUser&count=5';
+    twitterClient.get(tweetsUrl, 
         function (error, tweets, response) {
-        
+        var tweetsString = '';
+
         if (!error) {
+            tweetsString = '\n';
             for (var i = 0; i < tweets.length; i++) {
-                console.log(tweets[i].text);
-                console.log('\n');
+                tweetsString += tweets[i].text + '\n';
             }
+            console.log(tweetsString);
+            log(tweetsString);
         }
         else {
             console.log('ERROR: ' + error);
+            log(error);
         }
     });
 }
@@ -48,20 +53,20 @@ function doWhatItSays(fileName) {
         openQuoteNdx = null,
         closeQuoteNdx = null;
     
-    if (!fileName) {
-        fileName = "random.txt";
-    }
-    
+    log('\nReceived command do-what-it-says with the file ' + 
+        fileName + ' as the argument.\n');
+
     fs.readFile(fileName, "utf8", function(error, data) {
         data = data.split('');
         var commaNdx = data.indexOf(',');
         var firstString = data.slice(0, commaNdx).join('');
-        var secondString = data.slice(commaNdx).join('');
+        var secondString = data.slice(commaNdx + 1).join('');
         handleInput(firstString, secondString);
     });    
 }
 
 function spotify(songName) {
+    var responseString = null;
     if (!songName) {
         songName = 'The Sign, Ace of Base';
     }
@@ -71,21 +76,12 @@ function spotify(songName) {
         query: songName,
         limit: 1
     }).then(function(response) {
-        var responseItem = response.tracks.items[0];
-        var artistsString = '';
-        // show the artist(s) name
-        for (var i = 0; i < responseItem.artists.length; i++) {
-            artistsString += responseItem.artists[i].name + ' ';
-        }
-        console.log('Artist(s): ' + artistsString);
-        
-        // show the preview link from Spotify
-        console.log('Preview Link: ' + responseItem.href);
-
-        // show the album the song is off of
-        console.log('Album: ' + responseItem.album.name)
+        responseString = createSpotifyResponse(response);
+        console.log(responseString);
+        log(responseString);
     }).catch(function(err) {
         console.log(err);
+        log(err);
     });
 }
 
@@ -97,23 +93,59 @@ function movie(title) {
     var title = 't=' + title;
     var returnType = 'type=json';
     var fullUrl = baseUrl + apiKey + '&' + title + '&' + plot;
+    var responseString = null;
     
+    request(fullUrl, function (error, response, body) {
+        responseString = createOmdbResponse(body);
+        console.log(responseString);
+        log(responseString);    
+    });
+}
+
+function createSpotifyResponse(spotifyResponse) {
+    var responseItem = spotifyResponse.tracks.items[0];
+    var artistsString = '';
+    
+    // build a string with artists names
+    for (var i = 0; i < responseItem.artists.length; i++) {
+        artistsString += responseItem.artists[i].name + ' ';
+    }
+
+    var responseString = '\nArtist(s): ' + artistsString + '\n' +
+        'Preview Link: ' + responseItem.preview_url + '\n' +
+        'Album: ' + responseItem.album.name + '\n';
+    return responseString;
+}
+
+function createOmdbResponse(responseBody) {
+    var omdbResponse = JSON.parse(responseBody);
+
+    if (!omdbResponse.Response) {
+        return omdbResponse.Error;
+    }
+
+    // indexes of ratings objects within the Ratings array
     var ratings = {
         imdb: 0,
         rottenTomatoes: 1,
         metacritic: 2
     };
+    
+    var responseString = '\nTitle: ' + omdbResponse.Title + '\n' + 
+        'Released: ' + omdbResponse.Released + '\n' +
+        'IMDB Rating: ' + omdbResponse.Ratings[ratings.imdb].Value + '\n' +
+        'Rotten Tomatoes Rating: ' + omdbResponse.Ratings[ratings.rottenTomatoes].Value + '\n' +
+        'Country: ' + omdbResponse.Country + '\n' +
+        'Language: ' + omdbResponse.Language + '\n' +
+        'Plot: ' + omdbResponse.Plot + '\n' +
+        'Actors: ' + omdbResponse.Actors + '\n';
+    return responseString;
+}
 
-    request(fullUrl, function (error, response, body) {
-        var omdbResponse = JSON.parse(body);
-        console.log('Title: ' + omdbResponse.Title);
-        console.log('Release Year: ' + omdbResponse.Released);
-        console.log('IMDB Rating: ' + omdbResponse.Ratings[ratings.imdb].Value);
-        console.log('Rotten Tomatoes Rating: ' + omdbResponse.Ratings[ratings.rottenTomatoes].Value);
-        console.log('Country: ' + omdbResponse.Country);
-        console.log('Language: ' + omdbResponse.Language);
-        console.log('Plot: ' + omdbResponse.Plot);
-        console.log('Actors: ' + omdbResponse.Actors);
+function log(outputString) {
+    outputString += '\n-----------------------------------------------\n'
+    fs.appendFile('log.txt', outputString, function (error) {
+        if (error) throw error;
     });
 }
 
@@ -125,22 +157,22 @@ function handleInput(userCommand, commandArg) {
             showTweets();
             break;
         case command.do:
-            doWhatItSays();
-            
+            doWhatItSays('random.txt');
             break;
         case command.spotify: 
             if (!commandArg) {
                 commandArg = getUserCommandArg();
             }
-            
-            spotify(commandArg);
+            spotify(commandArg);            
             break;
         case command.movie:
-            var movieTitle = getUserCommandArg();
+            var movieTitle = getUserCommandArg() || 'Mr. Nobody';
             movie(movieTitle);
             break;
-        default: 
-            console.log('Unknown command entered.');
+        default:
+            var unknownCommandErr = '\nUnknown command entered\n'; 
+            log(unknownCommandErr);
+            console.log(unknownCommandErr);
             break; 
     }
 }

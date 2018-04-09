@@ -112,6 +112,7 @@ function createSpotifyResponse(spotifyResponse) {
     }
 
     var responseString = '\nArtist(s): ' + artistsString + '\n' +
+        'Song Name: ' + responseItem.name + '\n' +
         'Preview Link: ' + responseItem.preview_url + '\n' +
         'Album: ' + responseItem.album.name + '\n';
     return responseString;

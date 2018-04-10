@@ -48,3 +48,6 @@ TWITTER_CONSUMER_SECRET={YOUR_TWITTER_CONSUMER_SECRET_KEY}
 TWITTER_ACCESS_TOKEN_KEY={YOUR_TWITTER_ACCESS_TOKEN_KEY}
 TWITTER_ACCESS_TOKEN_SECRET={YOUR_TWITTER_ACCESS_TOKEN_SECRET_KEY}
 ```
+
+### Log File
+Note that each command creates a record containing of the ouput from that command in a file named log.txt

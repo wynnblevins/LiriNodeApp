@@ -17,7 +17,7 @@ node liri.js movie-this ghostbusters
 The do-what-it-says command will check the contents of random.txt and based on the contents run another command.  Use the command as follows:
 
 ```shell 
-node liri.js movie-this ghostbusters
+node liri.js do-what-it-says
 ``` 
 
 ### Spotify This Song

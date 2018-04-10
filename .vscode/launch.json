@@ -10,7 +10,7 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}\\liri.js",
-            "args": ["spotify-this-song", "I want it that way"]
+            "args": ["do-what-it-says"]
         }
     ]
 }

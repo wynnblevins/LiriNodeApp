@@ -6,21 +6,21 @@
 3. spotify-this-song
 4. my-tweets
 
-###Movie This
+### Movie This
 The movie-this command grabs a provided movie's information from omdb.  Use the command as follows:
 
 ```shell 
 node liri.js movie-this ghostbusters
 ``` 
 
-###Do What It Says
+### Do What It Says
 The do-what-it-says command will check the contents of random.txt and based on the contents run another command.  Use the command as follows:
 
 ```shell 
 node liri.js movie-this ghostbusters
 ``` 
 
-###Spotify This Song
+### Spotify This Song
 The spotify this song command will grab the details of a provided song and print the details to the screen.
 
 ```shell
@@ -33,10 +33,10 @@ Note that the above command will grab a lesser known version of Stranglehold.  I
 node liri.js spotify-this-song Stranglehold Ted Nugent
 ```
 
-###My Tweets
+### My Tweets
 The my tweets command will retrieve the tweets for the user specified in the project's .env file.
 
-###Setting Up .env
+### Setting Up .env
 The user should create a .env file with the following format, replacing values in the curly braces with the values generated while setting up their twitter and spotify applications:
 
 ```shell    

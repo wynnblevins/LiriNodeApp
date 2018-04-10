@@ -1,6 +1,6 @@
-#LIRI Application
+# LIRI Application
 
-##Commands
+## Commands
 1. movie-this
 2. do-what-it-says
 3. spotify-this-song
